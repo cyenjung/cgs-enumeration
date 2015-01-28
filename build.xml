@@ -1,0 +1,70 @@
+<project name="cgs-enumeration" default="all">
+    <property name="src" value="src" />
+    <property name="build" value="build" />
+    <property name="bin" value="bin" />
+    <property name="dist" value="dist" />
+    <property name="lib" value="lib" />
+    <property name="driver" value="poset.TraverseLattice" />
+    <property name="minMem" value="256m" />
+    <property name="maxMem" value="2048m" />
+    <property name="slf4" value="${lib}/slf4j-api-1.7.5.jar" />
+    <property name="logback-core" value="${lib}/logback-core-1.1.0.jar" />
+    <property name="logback-classic" value="${lib}/logback-classic-1.1.0.jar" />
+    <property name="dist-name" value="cgs-enumeration.jar"/>
+    <property name="classpath" value="${slf4};${logback-core};${logback-classic}" />
+
+    <target name="all" depends="clean, jar, run" description="compile jar and run" />
+
+    <target name="clean">
+        <delete dir="${bin}" />
+    </target>
+
+    <target name="compile" description="compile classes">
+        <mkdir dir="${bin}" />
+        <property name="build.compiler" value="javac1.6" />
+        <javac source="1.6"
+               includeantruntime="false"
+               srcdir="${src}"
+               destdir="${bin}"
+               debug="off"
+               optimize="true"
+               verbose="false"
+               classpath="${classpath}">
+        </javac>
+    </target>
+
+    <target name="jar" depends="clean,compile" description="create a compact jar, which requires external libraries to be put in lib/">
+        <jar basedir="${bin}" destfile="${dist}/${dist-name}">
+            <zipfileset file="logback.xml" />
+            <manifest>
+                <attribute name="Main-Class" value="${driver}" />
+                <attribute name="Class-Path" value="../logback.xml ../${slf4} ../${logback-classic} ../${logback-core}" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-complete" depends="clean,compile" description="create a jar for distribution">
+        <jar basedir="${bin}" destfile="${dist}/${dist-name}">
+            <zipfileset src="${slf4}" includes="**/*.java **/*.class" />
+            <zipfileset src="${logback-core}" includes="**/*.java **/*.class" />
+            <zipfileset src="${logback-classic}" includes="**/*.java **/*.class" />
+            <zipfileset file="logback.xml" />
+            <manifest>
+                <attribute name="Main-Class" value="${driver}" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" description="default run that takes parameters">
+        <property name="traverser" value="ConcurrentUnordered" />
+        <property name="test" value="posets/d-100.txt" />
+        <property name="threads" value="4" />
+        <property name="enumerators" value="Counter" />
+        <java jar="${dist}/${dist-name}" fork="yes" maxmemory="${maxMem}">
+            <arg value="${traverser}" />
+            <arg value="${test}" />
+            <arg value="${threads}" />
+            <arg value="${enumerators}" />
+        </java>
+    </target>
+</project>
