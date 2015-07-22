@@ -3,10 +3,12 @@ Algorithms for enumerating the consistent global states of a distributed computa
 
 
 === The first run ===
+
 The defalt target of ant would compile and run the program with the poset: d-100. 
 
 
 === Run with different settings ===
+
 After the code is compiled, use "ant run" to execute the program. The command "ant run" can take four arguments, which are listed as follows:
 1. -Dtraverser=traverserName: For example, -Dtraverser=BFS will start the enumeration using the BFS algorithm. The available algorithms are BFS and Lex (case-sensitive on Mac OS).
 2. -Dtest=testName: The argument testName is the path to the test case.
@@ -20,4 +22,5 @@ After the code is compiled, use "ant run" to execute the program. The command "a
 
 
 === Reference ===
+
 The multithreaded enumerator -- ConcurrentUnorderedTraverser -- is implemented using the method in the paper: Yen-Jung Chang and Vijay K. Garg: "A Parallel Algorithm for Global States Enumeration in Concurrent Systems", PPoPP 2015.
